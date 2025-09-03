@@ -8,6 +8,7 @@ import 'package:todo_app/helpers/widgets/custom_app_bar.dart';
 import 'package:todo_app/models/todo_model.dart';
 import 'package:todo_app/views/widgets/add_task_text_field.dart';
 import 'package:todo_app/views/widgets/remove_button.dart';
+import 'package:todo_app/views/widgets/tasks_app_bar.dart';
 import 'package:todo_app/views/widgets/todo_container.dart';
 import 'package:todo_app/views/widgets/todos_list.dart';
 
@@ -22,10 +23,7 @@ class HomeScreen extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: AppColors.primaryBackGround,
-        appBar: CustomAppBar(
-          actions: [Icon(Icons.settings, color: AppColors.buttonColor)],
-          title: "My Tasks",
-        ),
+        appBar: TasksAppBar(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
