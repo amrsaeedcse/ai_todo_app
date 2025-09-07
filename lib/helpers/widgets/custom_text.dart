@@ -26,7 +26,7 @@ class CustomText extends StatelessWidget {
       overflow: oneLine == true ? TextOverflow.ellipsis : null,
       maxLines: oneLine == true ? 1 : null,
       text,
-      style: GoogleFonts.adamina(
+      style: GoogleFonts.poppins(
         decoration: isLined ? TextDecoration.lineThrough : null,
         color: !isLined
             ? color ?? (AppColors.primaryText)

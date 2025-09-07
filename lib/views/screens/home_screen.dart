@@ -1,61 +1,99 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app/bloc/todo_control/todo_control_cubit.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:todo_app/bloc/todo_list/todo_list_cubit.dart';
 import 'package:todo_app/helpers/theme/app_colors.dart';
-import 'package:todo_app/helpers/widgets/custom_text.dart';
 import 'package:todo_app/helpers/widgets/custom_app_bar.dart';
-import 'package:todo_app/models/todo_model.dart';
-import 'package:todo_app/views/widgets/add_task_text_field.dart';
-import 'package:todo_app/views/widgets/remove_button.dart';
-import 'package:todo_app/views/widgets/tasks_app_bar.dart';
-import 'package:todo_app/views/widgets/todo_container.dart';
+import 'package:todo_app/views/screens/add_todo_page.dart';
+import 'package:todo_app/views/widgets/mice.dart';
 import 'package:todo_app/views/widgets/todos_list.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    context.read<TodoListCubit>().getTodos();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.primaryBackGround,
-        appBar: TasksAppBar(),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              AddTaskTextField(),
-              SizedBox(height: 20),
-              Expanded(
-                child: BlocConsumer<TodoControlCubit, TodoControlState>(
-                  listener: (context, state) {
-                    // TODO: implement listener
-                  },
-                  builder: (context, state) {
-                    if (state is TodoControlEmpty) {
-                      return Center(
-                        child: CustomText(
-                          text: "No todos",
-                          fontWeight: FontWeight.w500,
-                          size: 25,
-                        ),
-                      );
-                    }
-                    List<TodoModel> data =
-                        (state as TodoControlAddedSuccess).data;
-                    return TodosList(data: data);
-                  },
+    return Scaffold(
+      backgroundColor: AppColors.primaryBackGround,
+      appBar: CustomAppBar(
+        title: "My Todos",
+        actions: [
+          Icon(
+            Icons.search_outlined,
+            color: AppColors.primaryText,
+            size: 40.sp,
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.0.w, vertical: 15.h),
+            child: Column(children: [Expanded(child: TodosList())]),
+          ),
+          Positioned(
+            right: 20.w,
+            bottom: 30.h,
+            child: Material(
+              color: AppColors.buttonColor,
+              shape: CircleBorder(),
+              child: InkWell(
+                customBorder: CircleBorder(),
+                onTap: () {
+                  //temp now
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) {
+                        return AddTodoPage();
+                      },
+                      transitionDuration: Duration(milliseconds: 1500),
+                      reverseTransitionDuration: Duration(milliseconds: 1500),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                            return FadeThroughTransition(
+                              secondaryAnimation: secondaryAnimation,
+                              animation: animation,
+                              child: child,
+                            );
+                          },
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 60.h,
+                  width: 60.w,
+                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  child: Center(
+                    child: Icon(
+                      Icons.add,
+                      color: AppColors.secondaryBackGround,
+                    ),
+                  ),
                 ),
               ),
-
-              RemoveButton(),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            left: 0,
+            right: 0.w,
+            bottom: 30.h,
+            child: Center(child: Mice()),
+          ),
+        ],
       ),
     );
   }
