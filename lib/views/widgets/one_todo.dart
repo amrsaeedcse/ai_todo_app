@@ -177,7 +177,6 @@ class _OneTodoState extends State<OneTodo> with SingleTickerProviderStateMixin {
                                 await animationController.reverse();
                                 context.read<TodoListCubit>().removeTodo(
                                   widget.todoModel,
-                                  "amr@gmail.com",
                                 );
                               } else {
                                 await animationController.reverse();

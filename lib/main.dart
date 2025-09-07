@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(debugShowCheckedModeBanner: false, home: child),
         );
       },
-      child: HomeScreen(),
+      child: SignInScreen(),
     ); // ch
   }
 }

@@ -7,6 +7,8 @@ class UserModel {
   final String email;
   final String pass;
 
+  static UserModel? lastUser;
+
   UserModel({required this.name, required this.email, required this.pass});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -46,7 +48,8 @@ class UserModel {
     }
     UserModel currUser = UserModel.fromJson(jsonDecode(user));
     if (currUser.pass == pass) {
-      return UserModel.fromJson(jsonDecode(user));
+      lastUser = UserModel.fromJson(jsonDecode(user));
+      return lastUser;
     }
     return null;
   }

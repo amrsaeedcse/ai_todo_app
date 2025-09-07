@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_app/models/user_model.dart';
 
 class TodoModel {
   final String todoName;
@@ -34,20 +35,23 @@ class TodoModel {
     required this.disc,
   });
 
-  static Future<void> saveTodo({
-    required String email,
-    required TodoModel todo,
-  }) async {
+  static Future<void> saveTodo({required TodoModel todo}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    final todos = sharedPreferences.getStringList("${email}_todos") ?? [];
+    final todos =
+        sharedPreferences.getStringList("${UserModel.lastUser!.email}_todos") ??
+        [];
     todos.add(jsonEncode(todo.toJson()));
-    sharedPreferences.setStringList("${email}_todos", todos);
+    sharedPreferences.setStringList(
+      "${UserModel.lastUser!.email}_todos",
+      todos,
+    );
   }
 
-  static Future<List<TodoModel>> getUserTodo({required email}) async {
+  static Future<List<TodoModel>> getUserTodo() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     List<String> jsonTodos =
-        sharedPreferences.getStringList("${email}_todos") ?? [];
+        sharedPreferences.getStringList("${UserModel.lastUser!.email}_todos") ??
+        [];
     List<TodoModel> todos = jsonTodos.map((e) {
       return TodoModel.fromJson(jsonDecode(e));
     }).toList();
@@ -55,12 +59,13 @@ class TodoModel {
   }
 
   static Future editTodo({
-    required String email,
     required String todoName,
     required TodoModel newTodo,
   }) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    List<String> jsonTodos = sharedPreferences.getStringList("${email}_todos")!;
+    List<String> jsonTodos = sharedPreferences.getStringList(
+      "${UserModel.lastUser!.email}_todos",
+    )!;
     List<TodoModel> todos = jsonTodos.map((e) {
       return TodoModel.fromJson(jsonDecode(e));
     }).toList();
@@ -70,15 +75,17 @@ class TodoModel {
     }
 
     List<String> savedTodo = todos.map((e) => jsonEncode(e.toJson())).toList();
-    sharedPreferences.setStringList("${email}_todos", savedTodo);
+    sharedPreferences.setStringList(
+      "${UserModel.lastUser!.email}_todos",
+      savedTodo,
+    );
   }
 
-  static Future removeTodo({
-    required String email,
-    required String deletedTodo,
-  }) async {
+  static Future removeTodo({required String deletedTodo}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    List<String> jsonTodos = sharedPreferences.getStringList("${email}_todos")!;
+    List<String> jsonTodos = sharedPreferences.getStringList(
+      "${UserModel.lastUser!.email}_todos",
+    )!;
     List<TodoModel> todos = jsonTodos.map((e) {
       return TodoModel.fromJson(jsonDecode(e));
     }).toList();
@@ -86,6 +93,9 @@ class TodoModel {
     List<String> savedTodo = todos.map((e) {
       return jsonEncode(e.toJson());
     }).toList();
-    sharedPreferences.setStringList("${email}_todos", savedTodo);
+    sharedPreferences.setStringList(
+      "${UserModel.lastUser!.email}_todos",
+      savedTodo,
+    );
   }
 }

@@ -101,10 +101,7 @@ class _MiceState extends State<Mice> {
             context.read<TodoListCubit>().addTempTodo(state.todoModel);
           } else {
             print("not temo");
-            context.read<TodoListCubit>().addTodo(
-              state.todoModel,
-              "amr@gmail.com",
-            );
+            context.read<TodoListCubit>().addTodo(state.todoModel);
           }
         } else if (state is VoiceControlError) {
           print(state.error);

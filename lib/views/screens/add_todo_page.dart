@@ -160,7 +160,6 @@ class _AddTodoPageState extends State<AddTodoPage> {
                               finished: false,
                               disc: todoControl.todoDisc.value,
                             ),
-                            "amr@gmail.com",
                           );
                         } else {
                           context.read<TodoListCubit>().editTodo(
