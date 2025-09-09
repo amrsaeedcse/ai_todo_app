@@ -14,6 +14,8 @@ import 'package:todo_app/views/widgets/todo_time.dart';
 import 'package:todo_app/views/widgets/todo_title_text_field.dart';
 import 'package:get/get.dart';
 
+import '../../notification.dart';
+
 class AddTodoPage extends StatefulWidget {
   AddTodoPage({super.key, this.editableTodo, this.temp = false});
   bool temp;
@@ -22,29 +24,41 @@ class AddTodoPage extends StatefulWidget {
   State<AddTodoPage> createState() => _AddTodoPageState();
 }
 
-class _AddTodoPageState extends State<AddTodoPage> {
-  TextEditingController todoTitle = TextEditingController();
+class _AddTodoPageState extends State<AddTodoPage>
+    with TickerProviderStateMixin {
+  // إضافة TickerProviderStateMixin
 
+  TextEditingController todoTitle = TextEditingController();
   TextEditingController todoDisc = TextEditingController();
 
-  AnimationController? animationController;
+  // إنشاء AnimationController بشكل صحيح
+  late AnimationController animationController;
 
   TodoControl todoControl = Get.put(TodoControl());
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    // تهيئة AnimationController مع duration ومع vsync
+    animationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    // بدء الانيميشن تلقائياً
+    animationController.forward();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    // dispose الـ AnimationController الأول
+    animationController.dispose();
     Get.delete<TodoControl>();
     super.dispose();
   }
 
   Future back() async {
-    await animationController?.reverse();
+    // عكس الانيميشن بشكل صحيح
+    await animationController.reverse();
     if (widget.temp) {
       print(widget.editableTodo!.todoName);
       context.read<TodoListCubit>().removeTempTodo(
@@ -56,11 +70,13 @@ class _AddTodoPageState extends State<AddTodoPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("rebuilt");
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
           title: "Add Details",
           suffix: GestureDetector(
@@ -73,41 +89,43 @@ class _AddTodoPageState extends State<AddTodoPage> {
           padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 20.h),
           child: Column(
             children: [
+              // استخدام AnimationController المُعرف بدلاً من onPlay
               TodoTitleTextField(initTitle: widget.editableTodo?.todoName)
-                  .animate(
-                    onPlay: (controller) => animationController = controller,
-                  )
+                  .animate(controller: animationController)
                   .then(delay: Duration(milliseconds: 0))
-                  .then()
                   .moveX(
                     begin: -100,
                     curve: Curves.elasticOut,
                     duration: Duration(milliseconds: 1000),
                   )
                   .fadeIn(duration: Duration(milliseconds: 1000)),
+
               SizedBox(height: 20.h),
+
               TodoDiscTextField(initDisc: widget.editableTodo?.disc)
                   .animate(controller: animationController)
                   .then(delay: Duration(milliseconds: 300))
-                  .then()
                   .moveX(
                     begin: -100,
                     curve: Curves.elasticOut,
                     duration: Duration(milliseconds: 1000),
                   )
                   .fadeIn(duration: Duration(milliseconds: 1000)),
+
               SizedBox(height: 20.h),
+
               TodoTime(initTime: widget.editableTodo?.finishTime)
                   .animate(controller: animationController)
                   .then(delay: Duration(milliseconds: 600))
-                  .then()
                   .moveX(
                     begin: -100,
                     curve: Curves.elasticOut,
                     duration: Duration(milliseconds: 1000),
                   )
                   .fadeIn(duration: Duration(milliseconds: 1000)),
+
               Spacer(),
+
               SafeArea(
                 child: Obx(() {
                   print("here");
@@ -116,6 +134,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
                       (todoControl.todoDateTime.value != null &&
                       todoControl.todoDisc.value.isNotEmpty &&
                       todoControl.todoTitle.value.isNotEmpty);
+
                   if (widget.editableTodo != null && widget.temp == false) {
                     print("hereddddd");
                     print("disc todo comtrol${todoControl.todoDisc.value}");
@@ -132,6 +151,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
                         (todoControl.todoTitle.value !=
                             widget.editableTodo!.todoName);
                   }
+
                   if (widget.temp) {
                     print("ok its temp");
                     showIt =
@@ -139,6 +159,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
                         todoControl.todoDisc.value.isNotEmpty &&
                         todoControl.todoTitle.value.isNotEmpty);
                   }
+
                   print(showIt);
                   double height;
                   if (showIt) {
@@ -146,37 +167,54 @@ class _AddTodoPageState extends State<AddTodoPage> {
                   } else {
                     height = 40.h;
                   }
-                  return CustomButton(
-                    height: height,
-                    canceled: !(showIt),
-                    onTap: () async {
-                      if (showIt) {
-                        await back();
-                        if (widget.editableTodo == null || widget.temp) {
-                          context.read<TodoListCubit>().addTodo(
-                            TodoModel(
-                              todoName: todoControl.todoTitle.value,
-                              finishTime: todoControl.todoDateTime.value!,
-                              finished: false,
-                              disc: todoControl.todoDisc.value,
-                            ),
-                          );
-                        } else {
-                          context.read<TodoListCubit>().editTodo(
-                            widget.editableTodo!.todoName,
 
-                            TodoModel(
-                              todoName: todoControl.todoTitle.value,
-                              finishTime: todoControl.todoDateTime.value!,
-                              finished: false,
-                              disc: todoControl.todoDisc.value,
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    label: 'save',
-                  ).animate();
+                  return CustomButton(
+                        height: height,
+                        canceled: !(showIt),
+                        onTap: () async {
+                          if (showIt) {
+                            await back();
+                            if (widget.editableTodo == null || widget.temp) {
+                              context.read<TodoListCubit>().addTodo(
+                                TodoModel(
+                                  todoName: todoControl.todoTitle.value,
+                                  finishTime: todoControl.todoDateTime.value!,
+                                  finished: false,
+                                  disc: todoControl.todoDisc.value,
+                                ),
+                              );
+                              print(
+                                todoControl.todoDateTime.value!
+                                    .toIso8601String(),
+                              );
+                              try {
+                                await scheduleTodoReminders(
+                                  finishTime: todoControl.todoDateTime.value!,
+                                  taskName: todoControl.todoTitle.value,
+                                );
+                                print("here eddddddddddddddddddded");
+                              } catch (e) {
+                                print(e.toString() + "احاااااااااااااااااا");
+                              }
+                            } else {
+                              context.read<TodoListCubit>().editTodo(
+                                widget.editableTodo!.todoName,
+                                TodoModel(
+                                  todoName: todoControl.todoTitle.value,
+                                  finishTime: todoControl.todoDateTime.value!,
+                                  finished: false,
+                                  disc: todoControl.todoDisc.value,
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        label: 'save',
+                      )
+                      .animate(controller: animationController)
+                      .then(delay: Duration(milliseconds: 900))
+                      .fadeIn(duration: Duration(milliseconds: 500))
+                      .moveY(begin: 50, duration: Duration(milliseconds: 800));
                 }),
               ),
             ],

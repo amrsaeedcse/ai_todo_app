@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:todo_app/bloc/todo_list/todo_list_cubit.dart';
 import 'package:todo_app/bloc/voice_control/voice_control_cubit.dart';
@@ -12,6 +13,7 @@ import 'package:todo_app/helpers/theme/app_colors.dart';
 import 'package:todo_app/helpers/widgets/custom_snack_bar.dart';
 
 import '../../models/todo_model.dart';
+import '../../notification.dart';
 
 class Mice extends StatefulWidget {
   Mice({super.key});
@@ -40,7 +42,7 @@ class _MiceState extends State<Mice> {
     if (!_isListening) {
       bool available = await _speech.initialize(
         onError: (errorNotification) {
-          print("eroor ${errorNotification}");
+          print("error ${errorNotification}");
         },
         onStatus: (status) async {
           print("stat is $status");
@@ -50,6 +52,7 @@ class _MiceState extends State<Mice> {
                 _confidence = 0;
               });
               context.read<VoiceControlCubit>().getAiTodo(_text);
+              _text = "";
             }
             setState(() {
               _isListening = false;
@@ -71,6 +74,7 @@ class _MiceState extends State<Mice> {
           cancelOnError: false,
           onResult: (result) {
             _text = result.recognizedWords;
+            print(_text);
             if (result.hasConfidenceRating && result.confidence > 0) {
               print(_confidence);
             }
@@ -97,15 +101,29 @@ class _MiceState extends State<Mice> {
           if (state.todoModel.todoName.isEmpty ||
               state.todoModel.disc.isEmpty ||
               state.todoModel.finishTime == null) {
-            print("added to temp");
             context.read<TodoListCubit>().addTempTodo(state.todoModel);
           } else {
-            print("not temo");
             context.read<TodoListCubit>().addTodo(state.todoModel);
+            try {
+              scheduleTodoReminders(
+                finishTime: state.todoModel.finishTime!,
+                taskName: state.todoModel.todoName,
+              );
+              print("ok it sheduled");
+            } catch (e) {
+              print(e.toString());
+            }
           }
         } else if (state is VoiceControlError) {
-          print(state.error);
-          ShowSnackBar.showWarning(context, state.error);
+          Fluttertoast.showToast(
+            msg: state.error,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
         }
       },
       builder: (context, state) {
@@ -128,10 +146,14 @@ class _MiceState extends State<Mice> {
           child: FloatingActionButton(
             backgroundColor: AppColors.buttonColor,
             onPressed: _isListening ? () {} : listen,
-            child: Icon(
-              _isListening ? Icons.mic : Icons.mic_none,
-              color: AppColors.secondaryBackGround,
-            ),
+            child: state is VoiceControlLoading
+                ? CupertinoActivityIndicator(
+                    color: AppColors.secondaryBackGround,
+                  )
+                : Icon(
+                    _isListening ? Icons.mic : Icons.mic_none,
+                    color: AppColors.secondaryBackGround,
+                  ),
           ),
         );
       },

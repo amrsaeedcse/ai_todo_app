@@ -203,52 +203,6 @@ class _OneTodoState extends State<OneTodo> with SingleTickerProviderStateMixin {
           return AddTodoPage(editableTodo: widget.todoModel, temp: widget.temp);
         },
       ),
-      // child: Container(
-      //   decoration: BoxDecoration(
-      //     color: AppColors.secondaryBackGround,
-      //     borderRadius: BorderRadius.circular(10.r),
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.black12,
-      //         offset: Offset(5, 5),
-      //         blurRadius: 10,
-      //       ),
-      //     ],
-      //   ),
-      //   child: Padding(
-      //     padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 6.h),
-      //     child: Row(
-      //       children: [
-      //         Transform.scale(
-      //           scale: 1.2,
-      //           child: Checkbox(
-      //             shape: RoundedRectangleBorder(
-      //               borderRadius: BorderRadiusGeometry.circular(4.r),
-      //               side: BorderSide(
-      //                 color: AppColors.borderColor.withOpacity(.1),
-      //               ),
-      //             ),
-      //             side: BorderSide(color: AppColors.borderColor.withOpacity(1)),
-      //             value: widget.todoModel.finished,
-      //             onChanged: (value) {
-      //               setState(() {
-      //                 widget.todoModel.finished != widget.todoModel.finished;
-      //               });
-      //             },
-      //           ),
-      //         ),
-      //         SizedBox(width: 10.w),
-      //         CustomText(
-      //           text: widget.todoModel.todoName,
-      //           fontWeight: FontWeight.w700,
-      //           size: 20.sp,
-      //         ),
-      //         Spacer(),
-      //         Icon(Icons.delete, color: Colors.red),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

@@ -174,7 +174,7 @@ class _TodoTimeState extends State<TodoTime> {
                             CustomText(
                               text: selectedDateTime == null
                                   ? "mm/dd/yyyy"
-                                  : "${selectedDateTime?.day}/${selectedDateTime?.month}/${selectedDateTime?.year}",
+                                  : "${selectedDateTime?.month}/${selectedDateTime?.day}/${selectedDateTime?.year}",
                               fontWeight: FontWeight.w500,
                               size: 15.sp,
                             ),

@@ -13,6 +13,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        // ✅ في Kotlin DSL لازم تكتب isCoreLibraryDesugaringEnabled
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -20,10 +22,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.todo_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -32,13 +31,27 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // لحد دلوقتي مفيش signingConfig release مخصص
             signingConfig = signingConfigs.getByName("debug")
+
+            // ضيف الأسطر دي لحل مشكلة النوتيفيكشن
+            isMinifyEnabled = false
+            isShrinkResources = false
+
+            // لو عايز تشغل الـ proguard بعدين
+            // proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // ✅ مكتبة desugaring المطلوبة لـ flutter_local_notifications
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    // لو محتاج كوتلن ستاندرد (موجود تلقائي غالباً)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
 }
