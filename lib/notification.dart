@@ -16,7 +16,6 @@ Future<void> initNotifications() async {
 
   await flutterLocalNotificationsPlugin.initialize(settings);
 
-  // اطلب الـ permission
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin
@@ -72,7 +71,6 @@ Future<void> scheduleTodoReminders({
         UILocalNotificationDateInterpretation.absoluteTime,
   );
 
-  // قبل نص ساعة
   await flutterLocalNotificationsPlugin.zonedSchedule(
     2,
     "⏰ Reminder: $taskName",
@@ -92,7 +90,6 @@ Future<void> scheduleTodoReminders({
         UILocalNotificationDateInterpretation.absoluteTime,
   );
 
-  // قبل 10 دقايق
   await flutterLocalNotificationsPlugin.zonedSchedule(
     3,
     "⏰ Reminder: $taskName",
