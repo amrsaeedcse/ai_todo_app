@@ -18,12 +18,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
   await initNotifications();
   await createNotificationChannel();
-
-  UserModel.lastUser = UserModel(
-    name: "amr",
-    email: "amr@gmail.com",
-    pass: "1234Am@",
-  );
   runApp(const MyApp());
 }
 
