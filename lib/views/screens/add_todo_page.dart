@@ -26,7 +26,6 @@ class AddTodoPage extends StatefulWidget {
 
 class _AddTodoPageState extends State<AddTodoPage>
     with TickerProviderStateMixin {
-  // إضافة TickerProviderStateMixin
 
   TextEditingController todoTitle = TextEditingController();
   TextEditingController todoDisc = TextEditingController();
@@ -66,7 +65,6 @@ class _AddTodoPageState extends State<AddTodoPage>
 
   @override
   Widget build(BuildContext context) {
-    print("rebuilt");
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
