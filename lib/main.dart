@@ -15,7 +15,7 @@ import 'package:todo_app/views/widgets/mice.dart';
 import 'package:todo_app/views/widgets/test.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ ضروري
+  WidgetsFlutterBinding.ensureInitialized(); 
   await initNotifications();
   await createNotificationChannel();
 
