@@ -31,7 +31,7 @@ class _AddTodoPageState extends State<AddTodoPage>
   TextEditingController todoTitle = TextEditingController();
   TextEditingController todoDisc = TextEditingController();
 
-  // إنشاء AnimationController بشكل صحيح
+
   late AnimationController animationController;
 
   TodoControl todoControl = Get.put(TodoControl());
@@ -39,25 +39,21 @@ class _AddTodoPageState extends State<AddTodoPage>
   @override
   void initState() {
     super.initState();
-    // تهيئة AnimationController مع duration ومع vsync
     animationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    // بدء الانيميشن تلقائياً
     animationController.forward();
   }
 
   @override
   void dispose() {
-    // dispose الـ AnimationController الأول
     animationController.dispose();
     Get.delete<TodoControl>();
     super.dispose();
   }
 
   Future back() async {
-    // عكس الانيميشن بشكل صحيح
     await animationController.reverse();
     if (widget.temp) {
       print(widget.editableTodo!.todoName);
@@ -89,7 +85,6 @@ class _AddTodoPageState extends State<AddTodoPage>
           padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 20.h),
           child: Column(
             children: [
-              // استخدام AnimationController المُعرف بدلاً من onPlay
               TodoTitleTextField(initTitle: widget.editableTodo?.todoName)
                   .animate(controller: animationController)
                   .then(delay: Duration(milliseconds: 0))
@@ -128,8 +123,6 @@ class _AddTodoPageState extends State<AddTodoPage>
 
               SafeArea(
                 child: Obx(() {
-                  print("here");
-                  print("is it temp${widget.temp}");
                   bool showIt =
                       (todoControl.todoDateTime.value != null &&
                       todoControl.todoDisc.value.isNotEmpty &&
@@ -153,7 +146,7 @@ class _AddTodoPageState extends State<AddTodoPage>
                   }
 
                   if (widget.temp) {
-                    print("ok its temp");
+          
                     showIt =
                         (todoControl.todoDateTime.value != null &&
                         todoControl.todoDisc.value.isNotEmpty &&
@@ -192,9 +185,8 @@ class _AddTodoPageState extends State<AddTodoPage>
                                   finishTime: todoControl.todoDateTime.value!,
                                   taskName: todoControl.todoTitle.value,
                                 );
-                                print("here eddddddddddddddddddded");
                               } catch (e) {
-                                print(e.toString() + "احاااااااااااااااااا");
+                                print(e.toString());
                               }
                             } else {
                               context.read<TodoListCubit>().editTodo(
