@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MorphingWidget extends StatefulWidget {
-  final Widget child; // أي Widget تحطه هنا
-  final AnimationController? controller; // تحكم خارجي لو حابب
+  final Widget child; 
+  final AnimationController? controller; 
   final Duration duration;
 
   MorphingWidget({
@@ -47,7 +47,7 @@ class _MorphingWidgetState extends State<MorphingWidget>
     if (!_useExternalController) {
       _internalController.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          setState(() {}); // ممكن تعمل حاجة بعد الانتهاء
+          setState(() {}); 
         }
       });
     }
